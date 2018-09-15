@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+function stow-absolute() {
+  stow -R --dir=stow --target=$HOME "$@"
+}
+
+stow-absolute i3

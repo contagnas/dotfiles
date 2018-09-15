@@ -105,9 +105,6 @@
     '';
   };
 
-  # Dotfile hacks
-  environment.etc."i3.conf".text = pkgs.callPackage ./i3-config.nix {};
-
   services.xserver = {
     enable = true;
     layout = "us";
@@ -129,7 +126,6 @@
       i3 = {
         enable = true;
         package = pkgs.i3-gaps;
-        configFile = "/etc/i3.conf";
       };
       default = "i3";
     };
