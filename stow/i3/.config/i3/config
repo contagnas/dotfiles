@@ -203,6 +203,7 @@ mode "god-mode" {
 bindsym $mod+grave mode "god-mode"
 bindsym $mod+Escape mode "i3-mode"
 
-bar {
-  position top
-}
+exec_always --no-startup-id restart-polybar example &
+# bar {
+  # position top
+# }

@@ -4,3 +4,4 @@ function stow-absolute() {
 }
 
 stow-absolute i3
+stow-absolute polybar
