@@ -1,0 +1,208 @@
+# i3 config file (v4)
+#
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+
+set $mod Mod1
+
+font pango:monospace 8
+
+# Dell XPS 13 Function keys
+# TODO: use actkb instead, but configuration.nix runs 
+# actkb commands as root ?!
+bindsym XF86AudioMute exec amixer sset 'Master' toggle
+bindsym XF86AudioLowerVolume exec amixer sset 'Master' 5%-
+bindsym XF86AudioRaiseVolume exec amixer sset 'Master' 5%+
+bindsym XF86MonBrightnessUp exec light -A 10
+bindsym XF86MonBrightnessDown exec light -U 10
+
+
+# No title bars
+for_window [class="^.*"] border pixel 0
+
+
+# Gap controls
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: Shift + +|-|0 (local), +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: Shift + +|-|0 (local), +|-|0 (global)
+
+mode "$mode_gaps" {
+  bindsym o mode "$mode_gaps_outer"
+  bindsym i mode "$mode_gaps_inner"
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+mode "$mode_gaps_inner" {
+  bindsym Shift+plus gaps inner current plus 5
+  bindsym Shift+minus gaps inner current minus 5
+  bindsym Shift+0 gaps inner current set 0
+
+  bindsym plus gaps inner all plus 5
+  bindsym minus gaps inner all minus 5
+  bindsym 0 gaps inner all set 0
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+mode "$mode_gaps_outer" {
+  bindsym Shift+plus gaps outer current plus 5
+  bindsym Shift+minus gaps outer current minus 5
+  bindsym Shift+0 gaps outer current set 0
+
+  bindsym plus gaps outer all plus 5
+  bindsym minus gaps outer all minus 5
+  bindsym 0 gaps outer all set 0
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+
+# Workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws0 "0"
+
+mode "i3-mode" {
+  bindsym i mode "default"
+  bindsym Escape mode "default"
+  bindsym grave mode "default"
+
+  bindsym 1 workspace $ws1; mode "default"
+  bindsym 2 workspace $ws2; mode "default"
+  bindsym 3 workspace $ws3; mode "default"
+  bindsym 4 workspace $ws4; mode "default"
+  bindsym 5 workspace $ws5; mode "default"
+  bindsym 6 workspace $ws6; mode "default"
+  bindsym 7 workspace $ws7; mode "default"
+  bindsym 8 workspace $ws8; mode "default"
+  bindsym 9 workspace $ws9; mode "default"
+  bindsym 0 workspace $ws0; mode "default"
+
+  bindsym Shift+exclam move container to workspace $ws1; mode "default"
+  bindsym Shift+at move container to workspace $ws2; mode "default"
+  bindsym Shift+numbersign move container to workspace $ws3; mode "default"
+  bindsym Shift+dollar move container to workspace $ws4; mode "default"
+  bindsym Shift+percent move container to workspace $ws5; mode "default"
+  bindsym Shift+asciicircum move container to workspace $ws6; mode "default"
+  bindsym Shift+ampersand move container to workspace $ws7; mode "default"
+  bindsym Shift+asterisk move container to workspace $ws8; mode "default"
+  bindsym Shift+parenleft move container to workspace $ws9; mode "default"
+  bindsym Shift+parenright move container to workspace $ws0; mode "default"
+
+  bindsym h focus left; mode "default"
+  bindsym j focus down; mode "default"
+  bindsym k focus up; mode "default"
+  bindsym l focus right; mode "default"
+
+  bindsym Shift+H move left; mode "default"
+  bindsym Shift+J move down; mode "default"
+  bindsym Shift+K move up; mode "default"
+  bindsym Shift+L move right; mode "default"
+
+  bindsym $mod+h resize shrink width 10 px or 10 ppt
+  bindsym $mod+j resize grow height 10 px or 10 ppt
+  bindsym $mod+k resize shrink height 10 px or 10 ppt
+  bindsym $mod+l resize grow width 10 px or 10 ppt
+
+  bindsym v split v
+  bindsym b split h
+
+  bindsym f fullscreen; mode "default"
+  bindsym r exec dmenu_run; mode "default"
+  bindsym q kill; mode "default"
+  bindsym Shift+space floating toggle; mode "default"
+  bindsym space focus mode_toggle; mode "default"
+  bindsym Shift+g mode "$mode_gaps"
+
+  # program binds
+  bindsym g exec chromium; mode "default"
+  bindsym t exec xterm; mode "default"
+  bindsym e exec emacs; mode "default"
+
+  bindsym Shift+C reload; mode "default"
+  bindsym Shift+R restart; mode "default"
+  bindsym Shift+Q Quit; mode "default"
+}
+
+
+mode "god-mode" {
+  bindsym i mode "default"
+  bindsym Escape mode "default"
+  bindsym grave mode "default"
+
+  bindsym 1 workspace $ws1
+  bindsym 2 workspace $ws2
+  bindsym 3 workspace $ws3
+  bindsym 4 workspace $ws4
+  bindsym 5 workspace $ws5
+  bindsym 6 workspace $ws6
+  bindsym 7 workspace $ws7
+  bindsym 8 workspace $ws8
+  bindsym 9 workspace $ws9
+  bindsym 0 workspace $ws0
+
+  bindsym Shift+exclam move container to workspace $ws1
+  bindsym Shift+at move container to workspace $ws2
+  bindsym Shift+numbersign move container to workspace $ws3
+  bindsym Shift+dollar move container to workspace $ws4
+  bindsym Shift+percent move container to workspace $ws5
+  bindsym Shift+asciicircum move container to workspace $ws6
+  bindsym Shift+ampersand move container to workspace $ws7
+  bindsym Shift+asterisk move container to workspace $ws8
+  bindsym Shift+parenleft move container to workspace $ws9
+  bindsym Shift+parenright move container to workspace $ws0
+
+  bindsym h focus left
+  bindsym j focus down
+  bindsym k focus up
+  bindsym l focus right
+
+  bindsym Shift+H move left
+  bindsym Shift+J move down
+  bindsym Shift+K move up
+  bindsym Shift+L move right
+
+  bindsym $mod+h resize shrink width 10 px or 10 ppt
+  bindsym $mod+j resize grow height 10 px or 10 ppt
+  bindsym $mod+k resize shrink height 10 px or 10 ppt
+  bindsym $mod+l resize grow width 10 px or 10 ppt
+
+  bindsym v split v
+  bindsym b split h
+
+  bindsym f fullscreen
+  bindsym r exec dmenu_run
+  bindsym q kill
+  bindsym Shift+space floating toggle
+  bindsym space focus mode_toggle
+  bindsym Shift+g mode "$mode_gaps"
+
+  # program binds
+  bindsym g exec chromium
+  bindsym t exec xterm
+  bindsym e exec emacs
+
+  bindsym Shift+C reload
+  bindsym Shift+R restart
+  bindsym Shift+Q Quit
+}
+
+bindsym $mod+grave mode "god-mode"
+bindsym $mod+Escape mode "i3-mode"
+
+bar {
+  position top
+}
