@@ -120,6 +120,7 @@
     libinput = {
       enable = true;
       naturalScrolling = true;
+      accelProfile = "flat";
     };
 
     windowManager = {
