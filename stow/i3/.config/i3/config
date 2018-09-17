@@ -121,7 +121,8 @@ mode "i3-mode" {
   bindsym b split h
 
   bindsym f fullscreen; mode "default"
-  bindsym r exec dmenu_run; mode "default"
+  bindsym r exec rofi -show run; mode "default"
+  bindsym w exec rofi -show window; mode "default"
   bindsym q kill; mode "default"
   bindsym Shift+space floating toggle; mode "default"
   bindsym space focus mode_toggle; mode "default"
@@ -184,7 +185,8 @@ mode "god-mode" {
   bindsym b split h
 
   bindsym f fullscreen
-  bindsym r exec dmenu_run
+  bindsym r exec rofi -show run
+  bindsym w exec rofi -show window
   bindsym q kill
   bindsym Shift+space floating toggle
   bindsym space focus mode_toggle

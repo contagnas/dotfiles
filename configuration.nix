@@ -55,7 +55,12 @@
 
     openjdk
     git
+
     polybar
+    siji
+    unifont
+    rofi
+    nitrogen
   ];
 
   users.users.chills = {
