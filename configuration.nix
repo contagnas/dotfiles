@@ -22,8 +22,7 @@
   powerManagement.cpuFreqGovernor = null; # managed by tlp?
 
   networking.hostName = "nixos";
-  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  # networking.networkmanager.enable = true; # TODO set this up
+  networking.networkmanager.enable = true;
 
   nixpkgs = {
     config = {
@@ -41,6 +40,8 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget
+    networkmanagerapplet
+    networkmanager
 
     vim
     emacs
