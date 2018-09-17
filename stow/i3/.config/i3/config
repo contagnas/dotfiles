@@ -130,7 +130,7 @@ mode "i3-mode" {
   # program binds
   bindsym g exec chromium; mode "default"
   bindsym t exec xterm; mode "default"
-  bindsym e exec emacs; mode "default"
+  bindsym e exec emacsclient -c; mode "default"
 
   bindsym Shift+C reload; mode "default"
   bindsym Shift+R restart; mode "default"
@@ -193,7 +193,7 @@ mode "god-mode" {
   # program binds
   bindsym g exec chromium
   bindsym t exec xterm
-  bindsym e exec emacs
+  bindsym e exec emacsclient -c
 
   bindsym Shift+C reload
   bindsym Shift+R restart

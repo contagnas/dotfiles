@@ -84,6 +84,8 @@
     lockOn.suspend = true;
   };
 
+  services.emacs.enable = true;
+
   sound = {
     enable = true;
     # mediaKeys.enable = true; # Doesn't work, might have to be user-level :(
