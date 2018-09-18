@@ -52,6 +52,8 @@
 
     xbindkeys
     xdotool
+    scrot
+    xclip
 
     openjdk
     git
