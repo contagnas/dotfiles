@@ -208,6 +208,3 @@ bindsym $mod+Escape mode "i3-mode"
 
 exec_always --no-startup-id restart-polybar example &
 exec_always --no-startup-id nm-applet &
-# bar {
-  # position top
-# }
