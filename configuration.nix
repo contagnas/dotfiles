@@ -57,6 +57,8 @@
 
     openjdk
     git
+    ammonite
+    sbt
 
     polybar
     siji
@@ -85,11 +87,18 @@
 
   services.openssh.enable = true;
 
+  swapDevices = [
+    {
+      device = "/var/swap";
+      size = 16384;
+    }
+  ];
+
+  services.logind.lidSwitch = "hibernate";
   # lock on lid close with physlock
-  services.logind.lidSwitch = "suspend";
   services.physlock = {
     enable = true;
-    lockOn.suspend = true;
+    lockOn.hibernate = true;
   };
 
   services.emacs.enable = true;
