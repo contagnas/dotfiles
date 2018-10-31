@@ -6,3 +6,4 @@ function stow-absolute() {
 stow-absolute i3
 stow-absolute polybar
 stow-absolute emacs
+stow-absolute sbt
