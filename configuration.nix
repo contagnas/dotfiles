@@ -136,10 +136,13 @@
     autoRepeatInterval = 25;
 
     # Touchpad support
-    libinput = {
+    synaptics = {
       enable = true;
-      naturalScrolling = true;
-      accelProfile = "flat";
+      twoFingerScroll = true;
+      palmDetect = true;
+      scrollDelta = -80;
+      # naturalScrolling = true;
+      #accelProfile = "flat";
     };
 
     windowManager = {
