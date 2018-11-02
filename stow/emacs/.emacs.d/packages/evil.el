@@ -1,13 +1,9 @@
-(use-package evil-leader
-  :straight t
-  :config
-  (evil-leader/set-leader "<SPC>")
-    (global-evil-leader-mode))
-
 (use-package evil
   :straight t
   :init
-  (setq evil-want-C-u-scroll t)
+  (setq
+   evil-want-C-u-scroll t
+   evil-want-Y-yank-to-eol t)
   :config
   ;; "hybrid" mode
   (setcdr evil-insert-state-map nil)
@@ -19,6 +15,12 @@
   (evil-define-key 'normal eshell-mode-map (kbd "I") 'evil-eshell-insert-line)
 
   (evil-mode))
+
+(use-package evil-leader
+  :straight t
+  :config
+  (evil-leader/set-leader "<SPC>")
+    (global-evil-leader-mode))
 
 ;;;;; 
 (defun evil-eshell-insert-line (count &optional vcount)
