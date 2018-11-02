@@ -1,0 +1,84 @@
+# i3 config file (v4)
+#
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+
+set $alt Mod1
+set $win Mod4
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $alt
+
+font pango:monospace 8
+
+# Dell XPS 13 Function keys
+# TODO: use actkb instead, but configuration.nix runs 
+# actkb commands as root ?!
+bindsym XF86AudioMute exec amixer sset 'Master' toggle
+bindsym XF86AudioLowerVolume exec amixer sset 'Master' 5%-
+bindsym XF86AudioRaiseVolume exec amixer sset 'Master' 5%+
+bindsym XF86MonBrightnessUp exec light -A 10
+bindsym XF86MonBrightnessDown exec light -U 10
+bindsym Print --release exec "scrot -s /tmp/screenshot-$(date +%F_%T).png -e 'xclip -selection c -t image/png < $f'"
+bindsym Shift+Print exec "scrot /tmp/screenshot-$(date +%F_%T).png -e 'xclip -selection c -t image/png < $f'"
+
+# No title bars
+for_window [class="^.*"] border pixel 0
+
+
+# Gap controls
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: Shift + +|-|0 (local), +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: Shift + +|-|0 (local), +|-|0 (global)
+
+mode "$mode_gaps" {
+  bindsym o mode "$mode_gaps_outer"
+  bindsym i mode "$mode_gaps_inner"
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+mode "$mode_gaps_inner" {
+  bindsym Shift+plus gaps inner current plus 5
+  bindsym Shift+minus gaps inner current minus 5
+  bindsym Shift+0 gaps inner current set 0
+
+  bindsym plus gaps inner all plus 5
+  bindsym minus gaps inner all minus 5
+  bindsym 0 gaps inner all set 0
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+mode "$mode_gaps_outer" {
+  bindsym Shift+plus gaps outer current plus 5
+  bindsym Shift+minus gaps outer current minus 5
+  bindsym Shift+0 gaps outer current set 0
+
+  bindsym plus gaps outer all plus 5
+  bindsym minus gaps outer all minus 5
+  bindsym 0 gaps outer all set 0
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+
+# Workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws0 "0"
+
+bindsym $alt+grave mode "god-mode"
+bindsym $alt+Escape mode "i3-mode"
+
+%TEMPLATE_BINDINGS%
+
+exec_always --no-startup-id restart-polybar example &
+exec_always --no-startup-id nm-applet &

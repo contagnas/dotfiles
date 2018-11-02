@@ -2,7 +2,10 @@
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
-set $mod Mod1
+set $alt Mod1
+set $win Mod4
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $alt
 
 font pango:monospace 8
 
@@ -60,10 +63,6 @@ mode "$mode_gaps_outer" {
 }
 
 
-# Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
-
-
 # Workspaces
 set $ws1 "1"
 set $ws2 "2"
@@ -76,135 +75,167 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws0 "0"
 
-mode "i3-mode" {
-  bindsym i mode "default"
-  bindsym Escape mode "default"
-  bindsym grave mode "default"
+bindsym $alt+grave mode "god-mode"
+bindsym $alt+Escape mode "i3-mode"
 
-  bindsym 1 workspace $ws1; mode "default"
-  bindsym 2 workspace $ws2; mode "default"
-  bindsym 3 workspace $ws3; mode "default"
-  bindsym 4 workspace $ws4; mode "default"
-  bindsym 5 workspace $ws5; mode "default"
-  bindsym 6 workspace $ws6; mode "default"
-  bindsym 7 workspace $ws7; mode "default"
-  bindsym 8 workspace $ws8; mode "default"
-  bindsym 9 workspace $ws9; mode "default"
-  bindsym 0 workspace $ws0; mode "default"
 
-  bindsym Shift+exclam move container to workspace $ws1; mode "default"
-  bindsym Shift+at move container to workspace $ws2; mode "default"
-  bindsym Shift+numbersign move container to workspace $ws3; mode "default"
-  bindsym Shift+dollar move container to workspace $ws4; mode "default"
-  bindsym Shift+percent move container to workspace $ws5; mode "default"
-  bindsym Shift+asciicircum move container to workspace $ws6; mode "default"
-  bindsym Shift+ampersand move container to workspace $ws7; mode "default"
-  bindsym Shift+asterisk move container to workspace $ws8; mode "default"
-  bindsym Shift+parenleft move container to workspace $ws9; mode "default"
-  bindsym Shift+parenright move container to workspace $ws0; mode "default"
+bindsym $win+$alt+Escape mode god-mode
+bindsym $win+grave mode god-mode
+bindsym $win+h focus left
+bindsym $win+j focus down
+bindsym $win+k focus up
+bindsym $win+l focus right
+bindsym $win+Shift+H move left
+bindsym $win+Shift+J move down
+bindsym $win+Shift+K move up
+bindsym $win+Shift+L move right
+bindsym $win+$alt+h resize shrink width 10 px or 10 ppt
+bindsym $win+$alt+j resize grow height 10 px or 10 ppt
+bindsym $win+$alt+k resize shrink height 10 px or 10 ppt
+bindsym $win+$alt+l resize grow width 10 px or 10 ppt
+bindsym $win+v split v
+bindsym $win+b split h
+bindsym $win+f fullscreen
+bindsym $win+r exec rofi -show run
+bindsym $win+w exec rofi -show window
+bindsym $win+q kill
+bindsym $win+Shift+space floating toggle
+bindsym $win+space focus mode_toggle
+bindsym $win+g exec chromium
+bindsym $win+e exec emacsclient -c
+bindsym $win+t exec xterm
+bindsym $win+Shift+C reload
+bindsym $win+Shift+R restart
+bindsym $win+Shift+Q Quit
+bindsym $win+0 workspace $ws0
+bindsym $win+Shift+parenright move container to workspace $ws0
+bindsym $win+1 workspace $ws1
+bindsym $win+Shift+exclam move container to workspace $ws1
+bindsym $win+2 workspace $ws2
+bindsym $win+Shift+at move container to workspace $ws2
+bindsym $win+3 workspace $ws3
+bindsym $win+Shift+numbersign move container to workspace $ws3
+bindsym $win+4 workspace $ws4
+bindsym $win+Shift+dollar move container to workspace $ws4
+bindsym $win+5 workspace $ws5
+bindsym $win+Shift+percent move container to workspace $ws5
+bindsym $win+6 workspace $ws6
+bindsym $win+Shift+asciicircum move container to workspace $ws6
+bindsym $win+7 workspace $ws7
+bindsym $win+Shift+ampersand move container to workspace $ws7
+bindsym $win+8 workspace $ws8
+bindsym $win+Shift+asterisk move container to workspace $ws8
+bindsym $win+9 workspace $ws9
+bindsym $win+Shift+parenleft move container to workspace $ws9
 
-  bindsym h focus left; mode "default"
-  bindsym j focus down; mode "default"
-  bindsym k focus up; mode "default"
-  bindsym l focus right; mode "default"
 
-  bindsym Shift+H move left; mode "default"
-  bindsym Shift+J move down; mode "default"
-  bindsym Shift+K move up; mode "default"
-  bindsym Shift+L move right; mode "default"
-
-  bindsym $mod+h resize shrink width 10 px or 10 ppt
-  bindsym $mod+j resize grow height 10 px or 10 ppt
-  bindsym $mod+k resize shrink height 10 px or 10 ppt
-  bindsym $mod+l resize grow width 10 px or 10 ppt
-
-  bindsym v split v
-  bindsym b split h
-
-  bindsym f fullscreen; mode "default"
-  bindsym r exec rofi -show run; mode "default"
-  bindsym w exec rofi -show window; mode "default"
-  bindsym q kill; mode "default"
-  bindsym Shift+space floating toggle; mode "default"
-  bindsym space focus mode_toggle; mode "default"
-  bindsym Shift+g mode "$mode_gaps"
-
-  # program binds
-  bindsym g exec chromium; mode "default"
-  bindsym t exec xterm; mode "default"
-  bindsym e exec emacsclient -c; mode "default"
-
-  bindsym Shift+C reload; mode "default"
-  bindsym Shift+R restart; mode "default"
-  bindsym Shift+Q Quit; mode "default"
+mode i3-mode {
+  bindsym i mode default; mode default
+  bindsym Escape mode default; mode default
+  bindsym $alt+Escape mode god-mode
+  bindsym grave mode god-mode
+  bindsym h focus left; mode default
+  bindsym j focus down; mode default
+  bindsym k focus up; mode default
+  bindsym l focus right; mode default
+  bindsym Shift+H move left; mode default
+  bindsym Shift+J move down; mode default
+  bindsym Shift+K move up; mode default
+  bindsym Shift+L move right; mode default
+  bindsym $alt+h resize shrink width 10 px or 10 ppt
+  bindsym $alt+j resize grow height 10 px or 10 ppt
+  bindsym $alt+k resize shrink height 10 px or 10 ppt
+  bindsym $alt+l resize grow width 10 px or 10 ppt
+  bindsym v split v; mode default
+  bindsym b split h; mode default
+  bindsym f fullscreen; mode default
+  bindsym r exec rofi -show run; mode default
+  bindsym w exec rofi -show window; mode default
+  bindsym q kill; mode default
+  bindsym Shift+space floating toggle; mode default
+  bindsym space focus mode_toggle; mode default
+  bindsym g exec chromium; mode default
+  bindsym e exec emacsclient -c; mode default
+  bindsym t exec xterm; mode default
+  bindsym Shift+C reload; mode default
+  bindsym Shift+R restart; mode default
+  bindsym Shift+Q Quit; mode default
+  bindsym 0 workspace $ws0; mode default
+  bindsym Shift+parenright move container to workspace $ws0; mode default
+  bindsym 1 workspace $ws1; mode default
+  bindsym Shift+exclam move container to workspace $ws1; mode default
+  bindsym 2 workspace $ws2; mode default
+  bindsym Shift+at move container to workspace $ws2; mode default
+  bindsym 3 workspace $ws3; mode default
+  bindsym Shift+numbersign move container to workspace $ws3; mode default
+  bindsym 4 workspace $ws4; mode default
+  bindsym Shift+dollar move container to workspace $ws4; mode default
+  bindsym 5 workspace $ws5; mode default
+  bindsym Shift+percent move container to workspace $ws5; mode default
+  bindsym 6 workspace $ws6; mode default
+  bindsym Shift+asciicircum move container to workspace $ws6; mode default
+  bindsym 7 workspace $ws7; mode default
+  bindsym Shift+ampersand move container to workspace $ws7; mode default
+  bindsym 8 workspace $ws8; mode default
+  bindsym Shift+asterisk move container to workspace $ws8; mode default
+  bindsym 9 workspace $ws9; mode default
+  bindsym Shift+parenleft move container to workspace $ws9; mode default
 }
 
 
-mode "god-mode" {
-  bindsym i mode "default"
-  bindsym Escape mode "default"
-  bindsym grave mode "default"
-
-  bindsym 1 workspace $ws1
-  bindsym 2 workspace $ws2
-  bindsym 3 workspace $ws3
-  bindsym 4 workspace $ws4
-  bindsym 5 workspace $ws5
-  bindsym 6 workspace $ws6
-  bindsym 7 workspace $ws7
-  bindsym 8 workspace $ws8
-  bindsym 9 workspace $ws9
-  bindsym 0 workspace $ws0
-
-  bindsym Shift+exclam move container to workspace $ws1
-  bindsym Shift+at move container to workspace $ws2
-  bindsym Shift+numbersign move container to workspace $ws3
-  bindsym Shift+dollar move container to workspace $ws4
-  bindsym Shift+percent move container to workspace $ws5
-  bindsym Shift+asciicircum move container to workspace $ws6
-  bindsym Shift+ampersand move container to workspace $ws7
-  bindsym Shift+asterisk move container to workspace $ws8
-  bindsym Shift+parenleft move container to workspace $ws9
-  bindsym Shift+parenright move container to workspace $ws0
-
+mode god-mode {
+  bindsym i mode default
+  bindsym Escape mode default
+  bindsym $alt+Escape mode god-mode
+  bindsym grave mode default
   bindsym h focus left
   bindsym j focus down
   bindsym k focus up
   bindsym l focus right
-
   bindsym Shift+H move left
   bindsym Shift+J move down
   bindsym Shift+K move up
   bindsym Shift+L move right
-
-  bindsym $mod+h resize shrink width 10 px or 10 ppt
-  bindsym $mod+j resize grow height 10 px or 10 ppt
-  bindsym $mod+k resize shrink height 10 px or 10 ppt
-  bindsym $mod+l resize grow width 10 px or 10 ppt
-
+  bindsym $alt+h resize shrink width 10 px or 10 ppt
+  bindsym $alt+j resize grow height 10 px or 10 ppt
+  bindsym $alt+k resize shrink height 10 px or 10 ppt
+  bindsym $alt+l resize grow width 10 px or 10 ppt
   bindsym v split v
   bindsym b split h
-
   bindsym f fullscreen
   bindsym r exec rofi -show run
   bindsym w exec rofi -show window
   bindsym q kill
   bindsym Shift+space floating toggle
   bindsym space focus mode_toggle
-  bindsym Shift+g mode "$mode_gaps"
-
-  # program binds
   bindsym g exec chromium
-  bindsym t exec xterm
   bindsym e exec emacsclient -c
-
+  bindsym t exec xterm
   bindsym Shift+C reload
   bindsym Shift+R restart
   bindsym Shift+Q Quit
+  bindsym 0 workspace $ws0
+  bindsym Shift+parenright move container to workspace $ws0
+  bindsym 1 workspace $ws1
+  bindsym Shift+exclam move container to workspace $ws1
+  bindsym 2 workspace $ws2
+  bindsym Shift+at move container to workspace $ws2
+  bindsym 3 workspace $ws3
+  bindsym Shift+numbersign move container to workspace $ws3
+  bindsym 4 workspace $ws4
+  bindsym Shift+dollar move container to workspace $ws4
+  bindsym 5 workspace $ws5
+  bindsym Shift+percent move container to workspace $ws5
+  bindsym 6 workspace $ws6
+  bindsym Shift+asciicircum move container to workspace $ws6
+  bindsym 7 workspace $ws7
+  bindsym Shift+ampersand move container to workspace $ws7
+  bindsym 8 workspace $ws8
+  bindsym Shift+asterisk move container to workspace $ws8
+  bindsym 9 workspace $ws9
+  bindsym Shift+parenleft move container to workspace $ws9
 }
 
-bindsym $mod+grave mode "god-mode"
-bindsym $mod+Escape mode "i3-mode"
 
 exec_always --no-startup-id restart-polybar example &
 exec_always --no-startup-id nm-applet &
