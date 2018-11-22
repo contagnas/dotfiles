@@ -18,9 +18,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.plymouth.enable = true;
 
-  powerManagement.enable = true;
-  powerManagement.cpuFreqGovernor = null; # managed by tlp?
-
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
@@ -40,8 +37,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget
-    networkmanagerapplet
-    networkmanager
 
     vim
     emacs
@@ -79,27 +74,7 @@
     "kbmfpngjjgdllneeigpgjifpgocmfgmb" # res
   ];
 
-  # backlight controls
-  programs.light.enable = true;
-
-  # Power management
-  services.tlp.enable = true;
-
   services.openssh.enable = true;
-
-  swapDevices = [
-    {
-      device = "/var/swap";
-      size = 16384;
-    }
-  ];
-
-  services.logind.lidSwitch = "hibernate";
-  # lock on lid close with physlock
-  services.physlock = {
-    enable = true;
-    lockOn.hibernate = true;
-  };
 
   services.emacs.enable = true;
 
@@ -109,11 +84,6 @@
 
     # config for alsa, default didn't work
     # see https://github.com/NixOS/nixpkgs/issues/5755
-    extraConfig =
-      ''
-        defaults.pcm.!card 1
-        defaults.ctl.!card 1
-      '';
   };
 
   hardware.pulseaudio = {
@@ -142,6 +112,15 @@
       accelProfile = "flat";
     };
 
+    # No acceleration for zowie mouse
+    #config = ''
+      #Section "InputClass"
+        #Identifier     "Kingsis Peripherals ZOWIE Gaming mouse"
+        #Driver         "libinput"
+        #MatchIsPointer "on"
+        #Option         "AccelProfile" "flat"
+    #'';
+
     windowManager = {
       i3 = {
         enable = true;
@@ -155,5 +134,5 @@
   # compatible, in order to avoid breaking some software such as database
   # servers. You should change this only after NixOS release notes say you
   # should.
-  system.stateVersion = "18.03"; # Did you read the comment?
+  system.stateVersion = "18.09"; # Did you read the comment?
 }
