@@ -44,6 +44,7 @@
     discord
     google-chrome
     chromium
+    steam
 
     xbindkeys
     xdotool
@@ -88,18 +89,21 @@
 
   hardware.pulseaudio = {
     enable = true;
+    support32Bit = true;
     package = pkgs.pulseaudioFull;
     extraConfig = ''
       load-module module-switch-on-connect
     '';
   };
 
+  hardware.opengl.driSupport32Bit = true;
+
   services.xserver = {
     enable = true;
     layout = "us";
 
     # swap caps and escape
-    xkbOptions = "caps:swapescape";
+    xkbOptions = "caps:escape";
 
     # repeat keys faster
     autoRepeatDelay = 200;
