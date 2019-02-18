@@ -1,0 +1,354 @@
+* packages
+** straight/use-package
+   Bootstrap straight
+   #+BEGIN_SRC emacs-lisp
+    (defvar bootstrap-version)
+    (let ((bootstrap-file
+           (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+          (bootstrap-version 5))
+      (unless (file-exists-p bootstrap-file)
+        (with-current-buffer
+            (url-retrieve-synchronously
+             "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+             'silent 'inhibit-cookies)
+          (goto-char (point-max))
+          (eval-print-last-sexp)))
+      (load bootstrap-file nil 'nomessage))
+   #+END_SRC
+  
+   Install use-package
+   #+BEGIN_SRC emacs-lisp
+    (straight-use-package 'use-package)
+   #+END_SRC
+  
+** org
+   TODO: Move this from customize to here
+   Use ~<el~ to create emacs-lisp code blocks
+  
+** which-key
+   #+BEGIN_SRC emacs-lisp
+     (use-package which-key
+       :straight t
+       :config
+       (setq which-key-idle-delay 0.3)
+       (which-key-mode))
+   #+END_SRC
+
+** better-defaults
+   #+BEGIN_SRC emacs-lisp
+  (use-package better-defaults
+    :straight t
+    :config)
+   #+END_SRC
+
+** bind-map
+   setup leader keymaps
+   note s-SPC is used for exwm
+   #+BEGIN_SRC emacs-lisp
+     (use-package bind-map 
+       :straight t
+       :config
+       (bind-map leader-map
+         :evil-keys ("SPC" "s-SPC")
+         :evil-states (normal motion visual)))
+   #+END_SRC
+** evil
+   #+BEGIN_SRC emacs-lisp
+    (use-package evil
+      :straight t
+      :init
+      (setq
+       evil-want-C-u-scroll t
+       evil-want-Y-yank-to-eol t)
+      :config
+      ;; "hybrid" mode
+      (setcdr evil-insert-state-map nil)
+      (define-key evil-insert-state-map
+        (read-kbd-macro evil-toggle-key) 'evil-normal-state)
+      (define-key evil-insert-state-map [escape] 'evil-normal-state)
+
+      ;; make I go to end of prompt instead of bol in eshell
+      (evil-define-key 'normal eshell-mode-map (kbd "I") 'evil-eshell-insert-line)
+      
+      ;; disable evil in exwm-mode buffers
+      (evil-set-initial-state 'exwm-mode 'emacs)
+
+      (evil-mode))
+   #+END_SRC
+   
+** ivy/counsel
+   #+BEGIN_SRC emacs-lisp
+     (use-package ivy
+       :straight t)
+
+     (use-package counsel
+       :straight t)
+
+     (bind-map-set-keys leader-map
+       "SPC" 'counsel-M-x)
+   #+END_SRC
+** projectile
+   #+BEGIN_SRC emacs-lisp
+     (use-package projectile
+       :straight t
+       :config
+       (projectile-mode +1)
+       (bind-map-set-keys leader-map 
+         "p" 'projectile-command-map
+         "sp" 'projectile-ag
+         ))
+
+     (use-package counsel-projectile
+       :straight t
+       :config
+       (counsel-projectile-mode))
+   #+END_SRC
+   
+** magit
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit
+       :straight t
+       :init
+       (bind-map-set-keys leader-map 
+         "ag" 'magit))
+   #+END_SRC
+** exwm
+   Programs to be bound
+   #+BEGIN_SRC emacs-lisp
+     (defun exwm-run-rofi-run () 
+       (interactive)
+       (start-process "" nil "rofi" "-show" "run"))
+
+     (defun exwm-run-google-chrome ()
+       (interactive)
+       (start-process "" nil "google-chrome-stable"))
+
+     (defun exwm-run-from-input (command)
+       (interactive (list (read-shell-command "$ ")))
+       (start-process-shell-command command nil command))
+   #+END_SRC
+
+   functions lifted from [[https://github.com/timor/spacemacsOS/blob/038ce796d601ab172d322788f362e8e6931c67b4/funcs.el][spacemacsOS]]
+   #+BEGIN_SRC emacs-lisp
+     (defun exwm/rename-buffer-to-title-name ()
+       "Renames a buffer to indicate the title of the x window"
+       (let* ((part1 exwm-class-name)
+              (part2 (when (not (string-equal exwm-class-name exwm-title))
+                       (concat "/" exwm-title)))
+              (name (concat part1 (or part2 "")))
+              (maxlen 200))
+         (exwm-workspace-rename-buffer (if (> (length name) maxlen)
+                                           (concat (seq-subseq name 0 (- maxlen 3)) "...")
+                                         name))))
+
+     (defun exwm-keybindings ()
+       (require 'exwm-input)
+
+       (defmacro exwm-bind-keys (&rest bindings)
+         "Bind input keys in EXWM.
+            BINDINGS is a list of cons cells containing a key (string) and a command."
+         `(progn
+            ,@(cl-loop for (key . cmd) in bindings
+                       collect `(exwm-input-set-key ,(cond
+                                                      ((stringp key) (kbd key))
+                                                      (t key))
+                                                    (quote ,cmd)))))
+
+   #+END_SRC
+
+   Keybindings first, they need to be defined before exwm starts
+   #+BEGIN_SRC emacs-lisp
+       (exwm-bind-keys 
+       ;; programs
+        ("s-r" . exwm-run-rofi-run)
+        ("s-g" . run-google-chrome)
+        ("s-b" . ivy-switch-buffer)
+        ("s-R" . exwm-restart)
+
+        ;; windows
+        ("s-d" . evil-window-delete)
+        ("s-v" . evil-window-vsplit)
+        ("s-s" . evil-window-split)
+        ("s-l" . evil-window-right)
+        ("s-h" . evil-window-left)
+        ("s-j" . evil-window-down)
+        ("s-H" . evil-window-move-far-left)
+        ("s-J" . evil-window-move-very-bottom)
+        ("s-K" . evil-window-move-very-top)
+        ("s-L" . evil-window-move-far-right)       
+        ("s-k" . evil-window-up)
+        ;; for david
+        ("s-o" . other-window)
+
+        ;; leader anywhere
+        ("s-SPC" . leader-map-prefix)
+        
+        ;; buffers
+        ("s-q" . kill-this-buffer)
+
+        ;; junk
+        ("s-[" . 'exwm-reset)
+        ("s-w" . exwm-workspace-switch)
+        ("s-&" . exwm-run-from-input)
+        )
+
+       (setq exwm-input-simulation-keys 
+             '(((kbd "c-n") . [down])
+               ((kbd "c-p") . [up])
+               ((kbd "c-f") . [right])
+               ((kbd "c-b") . [left])
+               ((kbd "c-d") . [page down])
+               ((kbd "c-u") . [page right]))
+             )
+
+       )
+   #+END_SRC
+   
+   start exwm with config
+   #+BEGIN_SRC emacs-lisp
+     (use-package exwm
+       :straight t
+       :config
+       (exwm-keybindings)
+       ;; rename buffers on window title change
+       (add-hook 'exwm-update-class-hook 'exwm/rename-buffer-to-title-name)
+       (add-hook 'exwm-update-title-hook 'exwm/rename-buffer-to-title-name)
+       ;; start in char mode
+       (add-hook 'exwm-manage-finish-hook 
+                 (lambda () (call-interactively #'exwm-input-release-keyboard)))
+       ;; enable s-SPC as leader in exwm-mode
+       (push ?\s-\  exwm-input-prefix-keys)
+       ;; Start exwm-enable. Prefer to not do it here, instead do it in 
+       ;; nixos config, or in .xinitrc with:
+       ;; +-------[$HOME/.xinitrc]--------+
+       ;; | emacs --daemon -f exwm-enable |
+       ;; | exec emacsclient -c           |
+       ;; +-------------------------------+
+       ;;(exwm-enable)
+       )
+   #+END_SRC
+   
+* config
+** config file
+   functions for opening, reloading, etc the config file
+   define the config file
+   #+BEGIN_SRC emacs-lisp
+     (setq config-file 
+           (expand-file-name "config.org" user-emacs-directory))
+   #+END_SRC
+ 
+   open the config file
+   #+BEGIN_SRC emacs-lisp
+     (defun open-config-file ()
+       "Open the emacs config file"
+       (interactive)
+       (find-file config-file))
+   #+END_SRC
+  
+   reload the config file
+   #+BEGIN_SRC emacs-lisp
+     (defun reload-config-file ()
+       "Reload the emacs config file"
+       (interactive)
+       (org-babel-load-file config-file))
+   #+END_SRC
+   
+   keybindings
+   #+BEGIN_SRC emacs-lisp
+     (bind-map-set-keys leader-map
+       "fed" 'open-config-file
+       "feR" 'reload-config-file
+       )
+   #+END_SRC
+    
+** general
+   don't be annoying
+   #+BEGIN_SRC emacs-lisp
+    (setq visible-bell nil)
+    (blink-cursor-mode 0)
+   #+END_SRC
+   
+** files
+   #+BEGIN_SRC emacs-lisp
+     (bind-map-set-keys leader-map
+       "fs" 'save-buffer
+       "ff" 'find-file)
+   #+END_SRC
+
+** buffers
+   #+BEGIN_SRC emacs-lisp
+     (bind-map-set-keys leader-map
+       "bd" 'kill-this-buffer
+       "bb" 'ivy-switch-buffer)
+
+
+   #+END_SRC
+
+** windows
+   #+BEGIN_SRC emacs-lisp
+     (bind-map-set-keys leader-map
+       "wv" 'evil-window-vsplit
+       "ws" 'evil-window-split
+       "wd" 'evil-window-delete
+       "wh" 'evil-window-left
+       "wl" 'evil-window-right
+       "wk" 'evil-window-up
+       "wj" 'evil-window-down
+       "wm" 'delete-other-windows)
+   #+END_SRC
+
+** help
+   #+BEGIN_SRC emacs-lisp
+     (bind-map-set-keys leader-map
+       "hdb" 'describe-bindings
+       "hdc" 'describe-char
+       "hdf" 'counsel-describe-function
+       "hdk" 'describe-key
+       "hdp" 'describe-package
+       "hdt" 'describe-theme
+       "hdv" 'counsel-describe-variable)
+   #+END_SRC
+
+** modeline
+   this will need to change if updating modeline, but limit the size of
+   the buffer name so we can see the modeline while still being able to
+   search with ivy.
+
+   #+BEGIN_SRC emacs-lisp
+  (setq-default mode-line-buffer-identification
+   (list -80 (propertized-buffer-identification "%12b")))
+   #+END_SRC
+** passwords
+   don't let passwords expire
+   #+BEGIN_SRC emacs-lisp
+     (setq password-cache-expiry nil)
+   #+END_SRC
+   
+** eshell
+   ~I~ goes to the end of the prompt instead of bol
+   #+BEGIN_SRC emacs-lisp
+     (defun evil-eshell-insert-line (count &optional vcount)
+       "Switch to insert state at the beginning of the current line.
+     Point is placed at the first non-blank character on the current
+
+     line. The insertion will be repeated COUNT times. If VCOUNT is 
+     non nil it should be number > 0. The insertion will be repeated 
+     in the next VCOUNT - 1 lines below the current one."
+       (interactive "p")
+       (push (point) buffer-undo-list)
+       (eshell-bol)
+       (setq evil-insert-count count
+             evil-insert-lines nil
+             evil-insert-vcount
+             (and vcount
+                  (> vcount 1)
+                  (list (line-number-at-pos)
+                        #'evil-first-non-blank
+                        vcount)))
+       (evil-insert-state 1))
+
+     (evil-define-key 
+       'normal eshell-mode-map (kbd "I") 
+       'evil-eshell-insert-line)
+   #+END_SRC
+  

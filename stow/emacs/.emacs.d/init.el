@@ -1,28 +1,55 @@
-(load-file "~/.emacs.d/lisp/bootstrap-straight.el")
-(mapc 'load (file-expand-wildcards "~/.emacs.d/packages/*.el"))
+(org-babel-load-file
+ (expand-file-name "config.org" user-emacs-directory))
 
-(evil-leader/set-key
-  "<SPC>" 'counsel-M-x
-  "fs" 'save-buffer
-  "bd" 'kill-this-buffer
-  "bb" 'ivy-switch-buffer
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(exwm-input-line-mode-passthrough t)
+ '(org-structure-template-alist
+   (quote
+    (("el" "#+BEGIN_SRC emacs-lisp
+?
+#+END_SRC")
+     ("s" "#+BEGIN_SRC ?
 
-  "wv" 'evil-window-vsplit
-  "ws" 'evil-window-split
-  "wd" 'evil-window-delete
-  "wh" 'evil-window-left
-  "wl" 'evil-window-right
-  "wk" 'evil-window-up
-  "wj" 'evil-window-down
-  "wm" 'delete-other-windows
-
-  "hdb" 'describe-bindings
-  "hdc" 'describe-char
-  "hdf" 'counsel-describe-function
-  "hdk" 'describe-key
-  "hdp" 'describe-package
-  "hdt" 'describe-theme
-  "hdv" 'counsel-describe-variable
-
-  "sp" 'counsel-ag
-  )
+#+END_SRC")
+     ("e" "#+BEGIN_EXAMPLE
+?
+#+END_EXAMPLE")
+     ("q" "#+BEGIN_QUOTE
+?
+#+END_QUOTE")
+     ("v" "#+BEGIN_VERSE
+?
+#+END_VERSE")
+     ("V" "#+BEGIN_VERBATIM
+?
+#+END_VERBATIM")
+     ("c" "#+BEGIN_CENTER
+?
+#+END_CENTER")
+     ("C" "#+BEGIN_COMMENT
+?
+#+END_COMMENT")
+     ("l" "#+BEGIN_EXPORT latex
+?
+#+END_EXPORT")
+     ("L" "#+LaTeX: ")
+     ("h" "#+BEGIN_EXPORT html
+?
+#+END_EXPORT")
+     ("H" "#+HTML: ")
+     ("a" "#+BEGIN_EXPORT ascii
+?
+#+END_EXPORT")
+     ("A" "#+ASCII: ")
+     ("i" "#+INDEX: ?")
+     ("I" "#+INCLUDE: %file ?")))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

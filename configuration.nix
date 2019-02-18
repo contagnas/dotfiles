@@ -16,7 +16,7 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.plymouth.enable = true;
+  # boot.plymouth.enable = true;
 
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
@@ -62,6 +62,7 @@
     rofi
     nitrogen
   ];
+
 
   users.users.chills = {
     extraGroups = [ "wheel" "networkmanager" ];
@@ -126,11 +127,11 @@
     #'';
 
     windowManager = {
-      i3 = {
+      exwm = {
         enable = true;
-        package = pkgs.i3-gaps;
+        # package = pkgs.i3-gaps;
       };
-      default = "i3";
+      default = "exwm";
     };
   };
 
