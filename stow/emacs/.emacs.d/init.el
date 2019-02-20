@@ -1,3 +1,6 @@
+;; the symlinked config.org can confuse emacs (maybe symlinked init.el does as well though)
+(setq vc-follow-symlinks t)
+
 (org-babel-load-file
  (expand-file-name "config.org" user-emacs-directory))
 
