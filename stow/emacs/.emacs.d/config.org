@@ -1,6 +1,6 @@
 * straight/use-package
-bootstrap straight
-#+BEGIN_SRC emacs-lisp
+  bootstrap straight
+  #+BEGIN_SRC emacs-lisp
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -13,12 +13,12 @@ bootstrap straight
        (goto-char (point-max))
        (eval-print-last-sexp)))
    (load bootstrap-file nil 'nomessage))
-#+END_SRC
+  #+END_SRC
 
-install use-package
-#+BEGIN_SRC emacs-lisp
+  install use-package
+  #+BEGIN_SRC emacs-lisp
 (straight-use-package 'use-package)
-#+END_SRC
+  #+END_SRC
 
 * org
   TODO: Move this from customize to here
@@ -114,135 +114,142 @@ install use-package
   #+END_SRC
 
 * magit
-   #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
      (use-package evil-magit
        :straight t
        :init
        (bind-map-set-keys leader-map
          "ag" 'magit))
 
-   #+END_SRC
+  #+END_SRC
 * exwm
-   common programs to get their own keybindings
-   #+BEGIN_SRC emacs-lisp
-     (defun exwm-run-google-chrome ()
-       (interactive)
-       (start-process "" nil "google-chrome-stable"))
+  common programs to get their own keybindings
+  #+BEGIN_SRC emacs-lisp
+    (defun exwm-run-google-chrome ()
+      (interactive)
+      (start-process "" nil "google-chrome-stable"))
 
-     (defun exwm-run-from-input (command)
-       (interactive (list (read-shell-command "$ ")))
-       (start-process-shell-command command nil command))
-   #+END_SRC
+    (defun exwm-run-from-input (command)
+      (interactive (list (read-shell-command "$ ")))
+      (start-process-shell-command command nil command))
+  #+END_SRC
 
-   functions lifted from [[https://github.com/timor/spacemacsOS/blob/038ce796d601ab172d322788f362e8e6931c67b4/funcs.el][spacemacsOS]]
-   #+BEGIN_SRC emacs-lisp
-     (defun exwm/rename-buffer-to-title-name ()
-       "Renames a buffer to indicate the title of the x window"
-       (let* ((part1 (concat "x[" exwm-class-name "] "))
-              (part2 (when (not (string-equal exwm-class-name exwm-title))
-                       exwm-title))
-              (name (concat part1 (or part2 "")))
-              (maxlen 200))
-         (exwm-workspace-rename-buffer (if (> (length name) maxlen)
-                                           (concat (seq-subseq name 0 (- maxlen 3)) "...")
-                                         name))))
+  functions lifted from [[https://github.com/timor/spacemacsOS/blob/038ce796d601ab172d322788f362e8e6931c67b4/funcs.el][spacemacsOS]]
+  #+BEGIN_SRC emacs-lisp
+    (defun exwm/create-functions ()
+      (defun exwm/rename-buffer-to-title-name ()
+        "Renames a buffer to indicate the title of the x window"
+        (let* ((part1 (concat "x[" exwm-class-name "] "))
+               (part2 (when (not (string-equal exwm-class-name exwm-title))
+                        exwm-title))
+               (name (concat part1 (or part2 "")))
+               (maxlen 200))
+          (exwm-workspace-rename-buffer (if (> (length name) maxlen)
+                                            (concat (seq-subseq name 0 (- maxlen 3)) "...")
+                                          name))))
 
-     ;; from https://gist.github.com/3402786
-     (defun toggle-maximize-buffer ()
-       "Maximize buffer"
-       (interactive)
-       (if (and (= 1 (length (window-list)))
-                (assoc ?_ register-alist))
-           (jump-to-register ?_)
-         (progn
-           (window-configuration-to-register ?_)
-           (delete-other-windows))))
+      ;; from https://gist.github.com/3402786
+      (defun toggle-maximize-buffer ()
+        "Maximize buffer"
+        (interactive)
+        (if (and (= 1 (length (window-list)))
+                 (assoc ?_ register-alist))
+            (jump-to-register ?_)
+          (progn
+            (window-configuration-to-register ?_)
+            (delete-other-windows))))
 
-     (defun exwm-layout-toggle-fullscreen ()
-       "Togggles full screen for Emacs and X windows"
-       (interactive)
-       (if exwm--id
-           (if exwm--fullscreen
-               (exwm-reset)
-             (exwm-layout-set-fullscreen))
-         (toggle-maximize-buffer)))
+      (defun exwm-layout-toggle-fullscreen ()
+        "Togggles full screen for Emacs and X windows"
+        (interactive)
+        (if exwm--id
+            (if exwm--fullscreen
+                (exwm-reset)
+              (exwm-layout-set-fullscreen))
+          (toggle-maximize-buffer)))
 
-    (defvar exwm-toggle-workspace 0
-      "Previously selected workspace. Used with `exwm-jump-to-last-exwm'.")
+      (defvar exwm-toggle-workspace 0
+        "Previously selected workspace. Used with `exwm-jump-to-last-exwm'.")
 
-    (defadvice exwm-workspace-switch (before save-toggle-workspace activate)
-      (setq exwm-toggle-workspace exwm-workspace-current-index))
+      (defadvice exwm-workspace-switch (before save-toggle-workspace activate)
+        (setq exwm-toggle-workspace exwm-workspace-current-index))
 
-     (defun exwm-jump-to-last-exwm ()
-       (interactive)
-       (exwm-workspace-switch exwm-toggle-workspace))
+      (defun exwm-jump-to-last-exwm ()
+        (interactive)
+        (exwm-workspace-switch exwm-toggle-workspace))
 
-     (defun exwm-keybindings ()
-       (require 'exwm-input)
-
-       (defmacro exwm-bind-keys (&rest bindings)
-         "Bind input keys in EXWM.
-            BINDINGS is a list of cons cells containing a key (string) and a command."
-         `(progn
-            ,@(cl-loop for (key . cmd) in bindings
-                       collect `(exwm-input-set-key ,(cond
-                                                      ((stringp key) (kbd key))
-                                                      (t key))
-                                                    (quote ,cmd)))))
-
-     (exwm-bind-keys
-      ;; programs
-      ("s-r" . dmenu)
-      ("s-g" . exwm-run-google-chrome)
-      ("s-b" . ivy-switch-buffer)
-      ("s-e" . eshell)
-      ("s-R" . exwm-restart)
-
-      ;; windows
-      ("s-d" . evil-window-delete)
-      ("s-v" . evil-window-vsplit)
-      ("s-s" . evil-window-split)
-      ("s-l" . evil-window-right)
-      ("s-h" . evil-window-left)
-      ("s-j" . evil-window-down)
-      ("s-H" . evil-window-move-far-left)
-      ("s-J" . evil-window-move-very-bottom)
-      ("s-K" . evil-window-move-very-top)
-      ("s-L" . evil-window-move-far-right)
-      ("s-k" . evil-window-up)
-
-      ("s-f" . exwm-layout-toggle-fullscreen)
-      ("<s-tab>" . exwm-jump-to-last-exwm)
-      ;; for david
-      ("s-o" . other-window)
-
-      ;; leader anywhere
-      ("s-SPC" . leader-map-prefix)
-
-      ;; buffers
-      ("s-q" . kill-this-buffer)
-
-      ;; junk
-      ("s-[" . 'exwm-reset)
-      ("s-w" . exwm-workspace-switch)
-      ("s-&" . exwm-run-from-input)
+      (require 'exwm-input)
+      (defmacro exwm-bind-keys (&rest bindings)
+        "Bind input keys in EXWM.
+              BINDINGS is a list of cons cells containing a key (string) and a command."
+        `(progn
+           ,@(cl-loop for (key . cmd) in bindings
+                      collect `(exwm-input-set-key ,(cond
+                                                     ((stringp key) (kbd key))
+                                                     (t key))
+                                                   (quote ,cmd)))))
       )
 
-     (setq exwm-input-simulation-keys
-           '(((kbd "c-n") . [down])
-             ((kbd "c-p") . [up])
-             ((kbd "c-f") . [right])
-             ((kbd "c-b") . [left])
-             ((kbd "c-d") . [page down])
-             ((kbd "c-u") . [page right]))))
-   #+END_SRC
+  #+END_SRC
+  
+  EXWM Keybindings. These must be setup before ~exwm-enable~ to work properly
+  #+BEGIN_SRC emacs-lisp
+    (defun exwm/create-keybindings ()
+      (require 'exwm-input)
+      (exwm-bind-keys
+       ;; programs
+       ("s-r" . dmenu)
+       ("s-g" . exwm-run-google-chrome)
+       ("s-b" . ivy-switch-buffer)
+       ("s-e" . eshell)
+       ("s-R" . exwm-restart)
 
-   start exwm with config
-   #+BEGIN_SRC emacs-lisp
+       ;; windows
+       ("s-d" . evil-window-delete)
+       ("s-v" . evil-window-vsplit)
+       ("s-s" . evil-window-split)
+       ("s-l" . evil-window-right)
+       ("s-h" . evil-window-left)
+       ("s-j" . evil-window-down)
+       ("s-H" . evil-window-move-far-left)
+       ("s-J" . evil-window-move-very-bottom)
+       ("s-K" . evil-window-move-very-top)
+       ("s-L" . evil-window-move-far-right)
+       ("s-k" . evil-window-up)
+
+       ("s-f" . exwm-layout-toggle-fullscreen)
+       ("<s-tab>" . exwm-jump-to-last-exwm)
+       ;; for david
+       ("s-o" . other-window)
+
+       ;; leader anywhere
+       ("s-SPC" . leader-map-prefix)
+
+       ;; buffers
+       ("s-q" . kill-this-buffer)
+
+       ;; junk
+       ("s-[" . 'exwm-reset)
+       ("s-w" . exwm-workspace-switch)
+       ("s-&" . exwm-run-from-input)
+       )
+
+      (setq exwm-input-simulation-keys
+            '(((kbd "c-n") . [down])
+              ((kbd "c-p") . [up])
+              ((kbd "c-f") . [right])
+              ((kbd "c-b") . [left])
+              ((kbd "c-d") . [page down])
+              ((kbd "c-u") . [page right]))))
+  #+END_SRC
+
+  start exwm with config
+  #+BEGIN_SRC emacs-lisp
      (use-package exwm
        :straight t
        :config
-       (exwm-keybindings)
+       (exwm/create-functions)
+       (exwm/create-keybindings)
        ;; rename buffers on window title change
        (add-hook 'exwm-update-class-hook 'exwm/rename-buffer-to-title-name)
        (add-hook 'exwm-update-title-hook 'exwm/rename-buffer-to-title-name)
@@ -267,7 +274,7 @@ install use-package
        ;; +-------------------------------+
        ;;(exwm-enable)
        )
-   #+END_SRC
+  #+END_SRC
 
 * dmenu
   #+BEGIN_SRC emacs-lisp
