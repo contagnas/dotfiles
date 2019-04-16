@@ -245,35 +245,44 @@
 
   start exwm with config
   #+BEGIN_SRC emacs-lisp
-     (use-package exwm
-       :straight t
-       :config
-       (exwm/create-functions)
-       (exwm/create-keybindings)
-       ;; rename buffers on window title change
-       (add-hook 'exwm-update-class-hook 'exwm/rename-buffer-to-title-name)
-       (add-hook 'exwm-update-title-hook 'exwm/rename-buffer-to-title-name)
-       ;; Always show all buffers
-       (setq exwm-workspace-show-all-buffers t)
-       (setq exwm-layout-show-all-buffers t)
-       ;; start in char mode
-       (add-hook 'exwm-manage-finish-hook
-                 (lambda () (call-interactively #'exwm-input-release-keyboard)))
-       ;; enable s-SPC as leader in exwm-mode
-       (push ?\s-\  exwm-input-prefix-keys)
+    (use-package exwm
+      :straight t
+      :config
+      (exwm/create-functions)
+      (exwm/create-keybindings)
+      ;; rename buffers on window title change
+      (add-hook 'exwm-update-class-hook 'exwm/rename-buffer-to-title-name)
+      (add-hook 'exwm-update-title-hook 'exwm/rename-buffer-to-title-name)
+      ;; Always show all buffers
+      (setq exwm-workspace-show-all-buffers t)
+      (setq exwm-layout-show-all-buffers t)
+      ;; start in char mode
+      (add-hook 'exwm-manage-finish-hook
+                (lambda () (call-interactively #'exwm-input-release-keyboard)))
+      ;; enable s-SPC as leader in exwm-mode
+      (push ?\s-\  exwm-input-prefix-keys)
 
-       (require 'exwm-systemtray)
-       (exwm-systemtray-enable)
-       (display-time-mode)
+      (require 'exwm-systemtray)
+      (exwm-systemtray-enable)
 
-       ;; Start with exwm-enable. Prefer to not do it here, instead do it in
-       ;; nixos config (exwm.enable = true;), or in .xinitrc with:
-       ;; +-------[$HOME/.xinitrc]--------+
-       ;; | emacs --daemon -f exwm-enable |
-       ;; | exec emacsclient -c           |
-       ;; +-------------------------------+
-       ;;(exwm-enable)
-       )
+      (require 'exwm-randr)
+      (setq exwm-randr-workspace-output-plist '(0 "DVI-0" 1 "DisplayPort-2"))
+      (add-hook 'exwm-randr-screen-change-hook
+        (lambda ()
+          (start-process-shell-command
+            "xrandr" nil "xrandr --output DVI-0 --left-of DisplayPort-2 --auto")))
+
+      (exwm-randr-enable)
+      (display-time-mode)
+
+      ;; Start with exwm-enable. Prefer to not do it here, instead do it in
+      ;; nixos config (exwm.enable = true;), or in .xinitrc with:
+      ;; +-------[$HOME/.xinitrc]--------+
+      ;; | emacs --daemon -f exwm-enable |
+      ;; | exec emacsclient -c           |
+      ;; +-------------------------------+
+      ;;(exwm-enable)
+      )
   #+END_SRC
 
 * dmenu
