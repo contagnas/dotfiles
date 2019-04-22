@@ -298,19 +298,20 @@
                 (lambda () (call-interactively #'exwm-input-release-keyboard)))
       ;; enable s-SPC as leader in exwm-mode
       (push ?\s-\  exwm-input-prefix-keys)
+      (require 'exwm-randr)
+      (setq exwm-randr-workspace-output-plist '(1 "DP-2" 2 "DP-1"))
+      (add-hook 'exwm-randr-screen-change-hook
+                (lambda ()
+                  (start-process-shell-command
+                   "xrandr" nil "xrandr --output DP-2 --right-of DP-1 --auto")))
+      (exwm-randr-enable)
 
       (require 'exwm-systemtray)
       (exwm-systemtray-enable)
-
-      (require 'exwm-randr)
-      (setq exwm-randr-workspace-output-plist '(0 "DVI-0" 1 "DisplayPort-2"))
-      (add-hook 'exwm-randr-screen-change-hook
-        (lambda ()
-          (start-process-shell-command
-            "xrandr" nil "xrandr --output DVI-0 --left-of DisplayPort-2 --auto")))
-
-      (exwm-randr-enable)
       (display-time-mode)
+
+      (require 'exwm-config)
+      (exwm-config-default)
       ;; Start with exwm-enable. Prefer to not do it here, instead do it in
       ;; nixos config (exwm.enable = true;), or in .xinitrc with:
       ;; +-------[$HOME/.xinitrc]--------+
