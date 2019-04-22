@@ -42,7 +42,6 @@
 
 * bind-map
   setup leader keymaps
-  note s-SPC is used for exwm
   #+BEGIN_SRC emacs-lisp
     (use-package bind-map
       :straight t
@@ -192,11 +191,49 @@
 
   #+END_SRC
   
+  Movement functions for switching between monitors
+  #+BEGIN_SRC emacs-lisp
+    (defun exwm-monitor-switch ()
+      (interactive)
+      "Left monitor is workspace 0, right monitor is monitor 1"
+      (exwm-workspace-switch-create (if (= 0 exwm-workspace-current-index) 1 0)))
+
+    (defun opposite-direction (dir)
+      (cond
+       ((eq dir 'up) 'down)
+       ((eq dir 'down) 'up)
+       ((eq dir 'left) 'right)
+       ((eq dir 'right) 'left)))
+
+    (defun window-move-far (dir &optional arg)
+      (dotimes (i (- (length (window-list)) 1))
+        (windmove-do-window-select dir arg)))
+
+    (defun move-window-or-workspace (dir &optional arg window)
+      (let ((other-window (windmove-find-other-window dir arg window)))
+        (cond ((null other-window)
+               (exwm-monitor-switch)
+               (window-move-far (opposite-direction dir)))
+              ((and (window-minibuffer-p other-window)
+                    (not (minibuffer-window-active-p other-window)))
+               (user-error "Minibuffer is inactive"))
+              (t
+               (select-window other-window)))))
+
+    (defun move-window-or-workspace-left ()
+      (interactive)
+      (move-window-or-workspace 'left))
+
+    (defun move-window-or-workspace-right ()
+      (interactive)
+      (move-window-or-workspace 'right))
+  #+END_SRC
+  
   EXWM Keybindings. These must be setup before ~exwm-enable~ to work properly
   #+BEGIN_SRC emacs-lisp
     (defun exwm/create-keybindings ()
       (require 'exwm-input)
-      (exwm-bind-keys
+     (exwm-bind-keys
        ;; programs
        ("s-r" . dmenu)
        ("s-g" . exwm-run-google-chrome)
@@ -208,8 +245,8 @@
        ("s-d" . evil-window-delete)
        ("s-v" . evil-window-vsplit)
        ("s-s" . evil-window-split)
-       ("s-l" . evil-window-right)
-       ("s-h" . evil-window-left)
+       ("s-l" . move-window-or-workspace-right)
+       ("s-h" . move-window-or-workspace-left)
        ("s-j" . evil-window-down)
        ("s-H" . evil-window-move-far-left)
        ("s-J" . evil-window-move-very-bottom)
@@ -242,7 +279,7 @@
               ((kbd "c-d") . [page down])
               ((kbd "c-u") . [page right]))))
   #+END_SRC
-
+  
   start exwm with config
   #+BEGIN_SRC emacs-lisp
     (use-package exwm
@@ -274,17 +311,14 @@
 
       (exwm-randr-enable)
       (display-time-mode)
-
       ;; Start with exwm-enable. Prefer to not do it here, instead do it in
       ;; nixos config (exwm.enable = true;), or in .xinitrc with:
       ;; +-------[$HOME/.xinitrc]--------+
       ;; | emacs --daemon -f exwm-enable |
       ;; | exec emacsclient -c           |
       ;; +-------------------------------+
-      ;;(exwm-enable)
       )
   #+END_SRC
-
 * dmenu
   #+BEGIN_SRC emacs-lisp
     (use-package dmenu
